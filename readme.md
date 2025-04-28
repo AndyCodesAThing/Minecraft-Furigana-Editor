@@ -12,7 +12,7 @@ Minecarft stores its language files in ".minecraft/assets/objects/". the index f
 - These files are downloaded when the game needs them. once they have been downloaded, they stay there.
 
 # Feature Ideas
-1. shearch and edit individual items
+1. search and edit individual items
     - I will use the TK Tree view for this. 
     - It will let you slect if you always want kanji with or without furigana for that item.
     - the changes will be saved to a specific file so they can be aplied every time you randomise
