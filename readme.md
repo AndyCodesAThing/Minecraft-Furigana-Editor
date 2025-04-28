@@ -1,7 +1,14 @@
+
 This is a learning Tools I am making to assist in learning japanese
 
-Minecarft stores its language files in ".minecraft/assets/indexes/" you will have files that look like "##.json" such as "24.json"
-- there is no way of telling what version these are ment for, so I just tries to get the latest version
+This program will take minecraft's default japanese Translation and mix it with a furigana resource pack that you provide.
+I use this one - https://modrinth.com/resourcepack/furigana/versions
+it should work with any furigana Resource pack.
+You are able to ajust the percentage of kanji without furigana.
+
+# some info about the minecraft language files
+Minecarft stores its language files in ".minecraft/assets/objects/". the index file tells you what file it is. the indexes are stored in ".minecraft/assets/indexes/" you will have files that look like "##.json" such as "24.json"
+- there is no way of telling what version these are meant for, so the program just tries to get the latest version
 - These files are downloaded when the game needs them. once they have been downloaded, they stay there.
 
 # Feature Ideas
