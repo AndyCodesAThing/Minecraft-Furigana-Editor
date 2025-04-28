@@ -24,4 +24,4 @@ Minecarft stores its language files in ".minecraft/assets/objects/". the index f
 I use PyInstaller 
 
 to make the exe use this comand
-    pyinstaller --onefile --add-data "assets;assets" src/main.py
+    python -m PyInstaller --onefile --add-data "assets;assets" src/main.py
