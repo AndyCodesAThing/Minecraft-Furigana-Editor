@@ -1,6 +1,6 @@
-This is a learning Tools I am making to assist in learning japanese
+This is a learning Tools I am making to assist in learning Japanese
 
-This program will take minecraft's default japanese Translation and mix it with a furigana resource pack that you provide.
+This program will take Minecraft's default Japanese Translation and mix it with a furigana resource pack that you provide.
 I use this one - https://modrinth.com/resourcepack/furigana/versions
 it should work with any furigana Resource pack.
 You are able to adjust the percentage of kanji without furigana.
