@@ -6,10 +6,10 @@ it should work with any furigana Resource pack.
 You are able to adjust the percentage of kanji without furigana.
 
 # Usage
-when runing for the first time just follow the messages you see. if you need to, you can change the paths latter in the settings tab.
-after that, just enter a Number into the feild and hit run.
+when running for the first time just follow the messages you see. if you need to, you can change the paths later in the settings tab.
+After that, just enter a Number into the field and click run.
 
-once you are in mincraft, if you have it save into the resource pack folder. then all you have to do is 
+once you are in minecraft, if you have it save into the resource pack folder. then all you have to do is 
 1. activate the resource pack
 2. set your language to 日本語 Furigana Scrambler
 
