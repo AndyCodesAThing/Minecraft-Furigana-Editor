@@ -216,6 +216,14 @@ that is not a valid number.
 Please enter a valid number''')
             return
         
+        
+        if percentage > 100:
+            percentage = 100
+        elif percentage < 0:
+            percentage = 0
+
+        print(f"percentage = {percentage}")
+        
         index_results = get_lang_from_minecraft_indexes(minecraft_dir=self.settings.minecraft_folder_path)
         if not index_results:
             tmb.showerror(title="Translation Not found",
@@ -262,6 +270,7 @@ loading the first one: {lang_file_list[0]}
             minecraft_RP_path=self.settings.RP_output_path,
             pack_name=self.settings.RP_folder_name
             )
+        tmb.showinfo("Completed", message="The resource pack has been made.")
 
 class MainWindow(tk.Tk):
     def __init__(self, **kwargs):

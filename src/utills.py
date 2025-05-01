@@ -106,6 +106,7 @@ def get_hash_from_index(index_path, lang_key = "minecraft/lang/ja_jp.json"):
     if lang_key not in index_data["objects"]:
         print("Japanese language file not found in index.")
         return None
+    return index_data["objects"][lang_key]["hash"]
     
 def get_data_from_hash(objects_dir, hash_val):
     subfolder = hash_val[:2]
@@ -142,7 +143,6 @@ def get_lang_from_minecraft_indexes(minecraft_dir):
         index_path = os.path.join(indexes_dir, index_file)
 
         hash_val = get_hash_from_index(index_path)
-
         lang_dict = get_data_from_hash(objects_dir, hash_val)
         if lang_dict:
             return lang_dict, is_latest_translation
