@@ -1,6 +1,6 @@
 import os
 
-from utills import write_json_fromat, read_json_format
+from utils import write_json_format, read_json_format
 
 SettingsFileLocation = "./settings.json"
 
@@ -42,4 +42,4 @@ class SettingsHandler():
             "furigana_rp_path": self.furigana_rp_path,
             "minecraft_RP_folder_path": self.RP_output_path,
         }
-        write_json_fromat(settings_dict, SettingsFileLocation)
+        write_json_format(settings_dict, SettingsFileLocation)

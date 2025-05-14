@@ -3,7 +3,7 @@ from tkinter import ttk, filedialog as tfd, messagebox as tmb, simpledialog as t
 import os
 
 from settings import SettingsHandler
-from utills import *
+from utils import *
 
 
 class SettingsTab(ttk.Frame, SettingsHandler):
@@ -206,9 +206,23 @@ class ScramblerTab(ttk.Frame):
         run_the_program_button = ttk.Button(master=self, text="Load", command=self.load_packs)
         run_the_program_button.pack()
 
+        # treeview data used for displaying to tree_view. will get modified by searches so dont it use for making pack.
+        self.tree_view_data = {}
+        """tree_view_data will get formatted something like below.
+        in the tuple, 0 is minecraft's translation, 1 is the furigana pack's """
+        {"minecraft.block.id": ("Minecraft translation", "Furigana Translation")}
 
-    def get_packs(self):
-        pass
+        # set up treeview section
+        frame2 = ttk.Frame(master=self)
+        frame2.pack()
+
+        # set up treeview
+        tree_view = ttk.Treeview(master=frame2)
+        tree_view["columns"] = ("Minecraft", "Furigana")
+        tree_view.pack()
+
+
+
     
     def get_default_translation(self):
         index_results = get_lang_from_minecraft_indexes(minecraft_dir=self.settings.minecraft_folder_path)
@@ -268,8 +282,19 @@ loading the first one: {lang_file_list[0]}
             return
         return furigana_lang_dict
 
+    def make_treeview_data(self, minecraft, furigana):
+        self.tree_view_data = {}
+        # get key that are not in minecraft's translation
+        furigana_keys_that_arnt_in_minecraft = set(list(furigana)) - set(list(minecraft))
+        print(furigana_keys_that_arnt_in_minecraft)
+
+        for key in minecraft:
+            translations = [minecraft[key], furigana[key]]
+            self.tree_view_data[key] = translations
+
+
     def run_it(self):
-        # get the inputed percent
+        # get the inputted percent
         percent = self.get_percentage()
         if not isinstance(percent, (int, float)):
             return
@@ -289,7 +314,7 @@ loading the first one: {lang_file_list[0]}
         mixed_lang_dict = mix_dicts(
             kanji=kanji_lang_dict, 
             furigana= furigana_lang_dict, 
-            precentage_from_kanji=percent)
+            percentage_from_kanji=percent)
 
         make_resource_pack(
             lang_data=mixed_lang_dict,
@@ -299,7 +324,20 @@ loading the first one: {lang_file_list[0]}
         tmb.showinfo("Completed", message="The resource pack has been made.\n\nIf Minecraft is running, You can press F3 + T to reload the pack.")
 
     def load_packs(self):
-        pass
+        # get the default Translation
+        kanji_lang_dict = self.get_default_translation()
+        if type(kanji_lang_dict) is not dict:
+            return
+        
+        # get furigana translation
+        furigana_lang_dict = self.get_furigana()
+        if type(furigana_lang_dict) is not dict:
+            return 
+        
+        # TODO load data into tree view
+        print(type(kanji_lang_dict))
+        for key in kanji_lang_dict:
+            print(type(kanji_lang_dict[key]))
 
 class MainWindow(tk.Tk):
     def __init__(self, **kwargs):
