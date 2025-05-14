@@ -203,27 +203,14 @@ class ScramblerTab(ttk.Frame):
         run_the_program_button = ttk.Button(master=self, text="RUN", command=self.run_it)
         run_the_program_button.pack()
 
+        run_the_program_button = ttk.Button(master=self, text="Load", command=self.load_packs)
+        run_the_program_button.pack()
 
-    def run_it(self):
-        entry = self.percentage_entry.get()
-        try:
-            percentage = float(entry)
-        except ValueError:
-            tmb.showerror(title="Not a Valid Number",
-                          message=f'''You Entered: "{entry}"
-that is not a valid number.
 
-Please enter a valid number''')
-            return
-        
-        
-        if percentage > 100:
-            percentage = 100
-        elif percentage < 0:
-            percentage = 0
-
-        print(f"percentage = {percentage}")
-        
+    def get_packs(self):
+        pass
+    
+    def get_default_translation(self):
         index_results = get_lang_from_minecraft_indexes(minecraft_dir=self.settings.minecraft_folder_path)
         if not index_results:
             tmb.showerror(title="Translation Not found",
@@ -239,7 +226,29 @@ An older one has been found, some ingame items may be in english.
 
 The language file does not come with the game and must be downloaded by the game.
 Please make sure you have ran the Latest UN-MODDED version of Minecraft and have used the japanese language option once.''')
-        
+        return kanji_lang_dict
+
+    def get_percentage(self):
+        entry = self.percentage_entry.get()
+        try:
+            percentage = float(entry)
+        except ValueError:
+            tmb.showerror(title="Not a Valid Number",
+                          message=f'''You Entered: "{entry}"
+that is not a valid number.
+
+Please enter a valid number''')
+            return
+        else: 
+            if percentage > 100:
+                percentage = 100
+            elif percentage < 0:
+                percentage = 0    
+            
+            print(f"percentage = {percentage}")
+            return percentage
+
+    def get_furigana(self):
         lang_file_list = get_lang_file_list(furigana_rp_zip=self.settings.furigana_rp_path)
         if len(lang_file_list) > 1:
             print(len(lang_file_list))
@@ -257,20 +266,40 @@ loading the first one: {lang_file_list[0]}
             tmb.showerror(title="Translation Not found",
                           message="Can't open the furigana language file")
             return
+        return furigana_lang_dict
+
+    def run_it(self):
+        # get the inputed percent
+        percent = self.get_percentage()
+        if not isinstance(percent, (int, float)):
+            return
+        
+        # get the default Translation
+        kanji_lang_dict = self.get_default_translation()
+        if type(kanji_lang_dict) is not dict:
+            return
+        
+        # get furigana translation
+        furigana_lang_dict = self.get_furigana()
+        if type(furigana_lang_dict) is not dict:
+            return 
         
 
         # Mix the data
         mixed_lang_dict = mix_dicts(
             kanji=kanji_lang_dict, 
             furigana= furigana_lang_dict, 
-            precentage_from_kanji=percentage)
+            precentage_from_kanji=percent)
 
         make_resource_pack(
             lang_data=mixed_lang_dict,
             minecraft_RP_path=self.settings.RP_output_path,
             pack_name=self.settings.RP_folder_name
             )
-        tmb.showinfo("Completed", message="The resource pack has been made.")
+        tmb.showinfo("Completed", message="The resource pack has been made.\n\nIf Minecraft is running, You can press F3 + T to reload the pack.")
+
+    def load_packs(self):
+        pass
 
 class MainWindow(tk.Tk):
     def __init__(self, **kwargs):
