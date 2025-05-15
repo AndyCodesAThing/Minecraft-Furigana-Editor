@@ -80,7 +80,7 @@ class SettingsTab(ttk.Frame, SettingsHandler):
         answer = tmb.askokcancel("First time setup", 
 """The settings file was not found
 
-Runing first time settup
+Running first time setup
 
 If this is your first time running this.
 The language file does not come with the game and must be downloaded by the game.
@@ -110,17 +110,17 @@ Press 'No' to set the path yourself.""")
             # if canceled, return
             return
         elif answer is True:
-            # If yes, find the pathe in appdata
+            # If yes, find the path in appdata
             path = os.path.join(os.getenv('APPDATA'), ".minecraft")
         else:
-            # If no, have the user slect the path
+            # If no, have the user select the path
             path = tfd.askdirectory()
             # TODO ad a check to see if the path the user gives is valid
         
         if not os.path.exists(path=path):
             # check if the path exist and show an error if it does not.
             tmb.showerror("Error", "The minecraft path can't be found.")
-            # let the user slect a diffrent way
+            # let the user select a different way
             self.set_path_minecraft()
         else:
             self.minecraft_folder_path = path
@@ -128,21 +128,21 @@ Press 'No' to set the path yourself.""")
 
     def set_path_RP_output(self):
         # ask how the path should be found
-        answer = tmb.askyesnocancel("Set the ouput location", "Would you like to export to the Minecraft Resource Pack folder?\nThis setting is where the mixed resource pack gets saved\n\nSelect 'No' to set a diffrent path")
+        answer = tmb.askyesnocancel("Set the output location", "Would you like to export to the Minecraft Resource Pack folder?\nThis setting is where the mixed resource pack gets saved\n\nSelect 'No' to set a different path")
         if answer is None:
             # if canceled, return
             return
         elif answer is True:
-            # If yes, find the pathe in appdata
+            # If yes, find the path in appdata
             path = os.path.join(os.getenv('APPDATA'), ".minecraft/resourcepacks")
         else:
-            # If no, have the user slect the path
+            # If no, have the user select the path
             path = tfd.askdirectory()
         
         if not os.path.exists(path=path):
             # check if the path exist and show an error if it does not.
             tmb.showerror("Error", "The path can't be found.")
-            # let the user slect a diffrent way
+            # let the user select a different way
             self.set_path_RP_output()
         else:
             self.RP_output_path = path
@@ -151,13 +151,13 @@ Press 'No' to set the path yourself.""")
     def set_path_RP_zip(self):
         # ask for the zip file
         path = tfd.askopenfilename(
-            initialdir=os.path.join(self.minecraft_folder_path, "resourcepacks"),
-            title="Please slect a Resource Pack ZIP file.",
+            initial_dir=os.path.join(self.minecraft_folder_path, "resourcepacks"),
+            title="Please select a Resource Pack ZIP file.",
             filetypes=(("ZIP files", "*.zip"), ("All files", "*.*"))
             )
         
         if not os.path.exists(path=path):
-            tmb.showerror("Error", "No path was slected.")
+            tmb.showerror("Error", "No path was selected.")
         else:
             self.furigana_rp_path = path
             self.furigana_rp_path_label.config(text=self.furigana_rp_path)
@@ -167,7 +167,7 @@ Press 'No' to set the path yourself.""")
             "Input", 
             "What do you want the resource pack to be called in minecraft?",
             parent=self.root_window,
-            initialvalue=self.RP_folder_name
+            initial_value=self.RP_folder_name
             )
         print(name)
         print(type(name))
@@ -217,9 +217,9 @@ class ScramblerTab(ttk.Frame):
         frame2.pack()
 
         # set up treeview
-        tree_view = ttk.Treeview(master=frame2)
-        tree_view["columns"] = ("Minecraft", "Furigana")
-        tree_view.pack()
+        self.tree_view = ttk.Treeview(master=frame2)
+        self.tree_view["columns"] = ("Minecraft", "Furigana")
+        self.tree_view.pack()
 
 
 
@@ -236,7 +236,7 @@ Please make sure you have ran the Latest UN-MODDED version of Minecraft and have
         if not latest_translation:
             tmb.showwarning(title="Latest Translation not found",
 message='''Can not find the latest translation file.
-An older one has been found, some ingame items may be in english.
+An older one has been found, some in game items may be in english.
 
 The language file does not come with the game and must be downloaded by the game.
 Please make sure you have ran the Latest UN-MODDED version of Minecraft and have used the japanese language option once.''')
@@ -266,7 +266,7 @@ Please enter a valid number''')
         lang_file_list = get_lang_file_list(furigana_rp_zip=self.settings.furigana_rp_path)
         if len(lang_file_list) > 1:
             print(len(lang_file_list))
-            # TODO let the user decide wich one they want to use
+            # TODO let the user decide which one they want to use
             tmb.showwarning(title="Multiple Language files found",
                             message=f'''Multiple Language files were found in the Resource Pack
 {lang_file_list}
@@ -282,14 +282,32 @@ loading the first one: {lang_file_list[0]}
             return
         return furigana_lang_dict
 
-    def make_treeview_data(self, minecraft, furigana):
+    def update_treeview_display(self):
+        for key in self.tree_view_data:
+           self.tree_view.insert('', 'end', text=key, values=self.tree_view_data[key])
+ 
+
+
+    def update_treeview_data(self, minecraft, furigana):
         self.tree_view_data = {}
         # get key that are not in minecraft's translation
-        furigana_keys_that_arnt_in_minecraft = set(list(furigana)) - set(list(minecraft))
-        print(furigana_keys_that_arnt_in_minecraft)
+        furigana_exclusive_keys = list(set(list(furigana)) - set(list(minecraft)))
 
         for key in minecraft:
-            translations = [minecraft[key], furigana[key]]
+            try:
+                furigana_translation = furigana[key]
+            except KeyError:
+                furigana_translation = None
+            
+            translations = (minecraft[key], furigana_translation)
+            self.tree_view_data[key] = translations
+
+        for key in furigana_exclusive_keys:
+            try: # this should always fail but we just make sure
+                minecraft_translation = minecraft[key]
+            except KeyError:
+                minecraft_translation = None
+            translations = (minecraft_translation, furigana[key])
             self.tree_view_data[key] = translations
 
 
@@ -324,6 +342,8 @@ loading the first one: {lang_file_list[0]}
         tmb.showinfo("Completed", message="The resource pack has been made.\n\nIf Minecraft is running, You can press F3 + T to reload the pack.")
 
     def load_packs(self):
+        """when the user presses the load button, it should ALWAYS load the files again just in case the user changes the paths
+        this should not be the case when searching the treeview"""
         # get the default Translation
         kanji_lang_dict = self.get_default_translation()
         if type(kanji_lang_dict) is not dict:
@@ -335,9 +355,8 @@ loading the first one: {lang_file_list[0]}
             return 
         
         # TODO load data into tree view
-        print(type(kanji_lang_dict))
-        for key in kanji_lang_dict:
-            print(type(kanji_lang_dict[key]))
+        self.update_treeview_data(minecraft=kanji_lang_dict, furigana=furigana_lang_dict)
+        self.update_treeview_display()
 
 class MainWindow(tk.Tk):
     def __init__(self, **kwargs):
